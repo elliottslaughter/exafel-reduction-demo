@@ -5,8 +5,8 @@ from pygion import index_launch, task, ID, Partition, Region, R, Reduce
 import numpy as np
 
 @task(privileges=[R, R, R, Reduce('+')])
-def update_step(A, B, x_old, x):
-    np.add(x.data, np.matmul(np.matmul(A.data, B.data), x_old.data), out=x.data)
+def forward_problem(A, B, x_old, x):
+    np.add(0.1 * x.data, np.matmul(np.matmul(A.data, B.data), x_old.data), out=x.data)
 
 @task(privileges=[R])
 def check_result(x):
@@ -37,8 +37,9 @@ def main():
     B_part = Partition.restrict(B, [n_tasks], B_transform, B_extent)
 
     for step in range(n_steps):
-        x, x_old = x_old, x
-        index_launch([n_tasks], update_step, A_part[ID], B_part[ID], x_old, x)
+        index_launch([n_tasks], forward_problem, A_part[ID], B_part[ID], x_old, x)
+        pygion.copy(x, 'data', x_old, 'data')
+        pygion.fill(x, 'data', 0)  # This would correspond to us trying another value of x
     check_result(x)
 
 if __name__ == '__main__':
