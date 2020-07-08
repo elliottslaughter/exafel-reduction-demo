@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import pygion
-from pygion import index_launch, task, Ispace, Partition, Region, R, Reduce
+from pygion import index_launch, task, Region, R, Reduce
 import numpy as np
 
 @task(privileges=[Reduce('+')])
@@ -19,8 +19,8 @@ def main():
     data = Region([10, 10, 10], {'x': pygion.float64})
     pygion.fill(data, 'x', 0)
 
-    n_tasks = 100
-    n_steps = 100
+    n_tasks = 10
+    n_steps = 10
     for step in range(n_steps):
         index_launch([n_tasks], inc, data)
     check_result(data, n_steps, n_tasks).get()
