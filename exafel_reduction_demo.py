@@ -19,11 +19,6 @@ def main():
     data = Region([10, 10, 10], {'x': pygion.float64})
     pygion.fill(data, 'x', 0)
 
-    # colors = [2, 2, 2]
-    # transform = np.eye(3) * 5
-    # extent = [5, 5, 5]
-    # P = Partition.restrict(data, colors, transform, extent)
-
     n_tasks = 100
     n_steps = 100
     for step in range(n_steps):
